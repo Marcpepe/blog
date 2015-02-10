@@ -1,30 +1,16 @@
 # Dealing with third-party proxy
 
-This last week, my team and I were faced with a mysterious behavior in our application
-
-## So, what's the problem ?
-
-what you have to know about our application is that:
-- it's build on a full-javascript stack (nodejs, ...)
-- we use a component called [offline](https://github.com/hubspot/offline), as our application requires to be partly operational offline
-
-| About [offline](https://github.com/hubspot/offline) :
-It is an open-source javascript package with no dependencies, which helps enhance your user's experience by detecting whether they're connected to the internet or not, and in the latter case, can perform some actions to enable a minimum usage of your app. The user, once offline, can still use your app because it has been cached.
-
-The issue we were having was that at times we would appear offline while in fact we weren't.
-
-## Diagnostic
-
-We identified pretty quickly that it was an authentication problem.
-
 If you've ever developed web applications for a large company, you must be familiar with having authentication done by a third-party proxy. And by third-party I mean handled by another team.
 
-Here what we we're working with :
+In my case, this is what our architecture looks like:
 
 
 
+## So, how's that the problem ?
 
+It's not necessarily a problem! But sometimes the proxy's behavior isn't what you would have expected. Like when your session expires, you might expect a 401 and get a 302 instead.
 
+Even if you can communicate with that team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
 
 
 
@@ -46,5 +32,3 @@ We soon understood what context triggered the untimely offline status.
 
 
 #### Workaround
-
-Even if you can communicate with that team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
