@@ -10,11 +10,14 @@ In my case, this is what our architecture looks like:
 
 It's not necessarily a problem! But sometimes the proxy's behavior isn't what you would have expected. Like when your session expires, you might expect a 401 from this proxy and get a 302 instead.
 
-Even if you can communicate with that team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
+Even if you can communicate with the authentication team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
 
 In our case, we were having problems with API calls from our cached application :
 
-`XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-app.com%2Fapi%2Fexample. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin https://my-app.com/api/example is therefore not allowed.` is the chrome console error we kept having. After looking it up, this is what you get when trying to make a cross-domain ajax call.
+```
+XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-app.com%2Fapi%2Fexample. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin https://my-app.com/api/example is therefore not allowed.
+```
+is the chrome console error we kept having. After looking it up, this is what you get when trying to make a cross-domain ajax call.
 
 
 #### What does CORS stand for ?
@@ -43,7 +46,7 @@ So in the end trying to use your app does nothing: you are not redirected to the
 Calling an asset via an ajax call is possible only if the domain which hosts that asset allows it. You enable it by adding a header. So this means that in our case,  
 `Access-Control-Allow-Origin: https://my-app.com`
 
-For the record, this header comes along with 2 others, which help you narrow down the rule to your specific need :
+For the record, this header comes along with 3 others, which help you narrow down the rule to your specific need :
 
 ```
 Access-Control-Allow-Methods: POST, GET, HEAD, OPTIONS
