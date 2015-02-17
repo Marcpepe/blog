@@ -40,6 +40,8 @@ And not only are those calls blocked, but they cannot be intercepted in your app
 
 So in the end trying to use your app does nothing: you are not redirected to the authentication server login.
 
+http://media.giphy.com/media/lb95bHRxh1Ze0/giphy.gif
+
 
 #### How to allow cross-domain calls
 
