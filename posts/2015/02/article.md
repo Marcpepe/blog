@@ -12,7 +12,7 @@ It's not necessarily a problem! But sometimes the proxy's behavior isn't what yo
 
 Even if you can communicate with the authentication team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
 
-In our case, we were having problems with API calls from our cached application :
+In our case, we were having problems with API calls from our application :
 
 ```
 XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-app.com%2Fapi%2Fexample. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin https://my-app.com/api/example is therefore not allowed.
@@ -20,7 +20,7 @@ XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-ap
 is the chrome console error we kept having. After looking it up, this is what you get when trying to make a cross-domain ajax call.
 
 
-#### What does CORS stand for ?
+#### What does cross-domain mean ?
 
 Wikipedia says:
 > Cross-origin resource sharing (CORS) is a mechanism that allows resources (e.g. fonts, JavaScript, etc.) on a web page to be requested from another domain outside the domain from which the resource originated.
