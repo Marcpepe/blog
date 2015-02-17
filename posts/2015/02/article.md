@@ -60,7 +60,7 @@ Access-Control-Max-Age: 1728000
 
 #### Ideal
 
-Let's stay pragmatic here! The best solution is to ask the authentication team to change the proxy's response from 302 to 401. This way, you can easily detect when your API calls fail and 'manually' redirect to your authentication login page.
+Let's stay pragmatic here! Probably the easiest and most efficient solution is to ask the authentication team to change the proxy's response from 302 to 401. This way, you can easily detect when your API calls fail and 'manually' redirect to your authentication login page.
 
 However, the authentication team may not be able to comply with that need. For instance, if they have other teams excepting a 302 and cannot work on a case-by-case basis.
 
@@ -74,3 +74,8 @@ If you have to stick with the 302, here's what you can ask. First ask if a `Acce
 If you're using a cache manifest, you may have experienced that you randomly get redirected to that file on first login. It's pretty annoying and tricky to understand why.
 
 Your application may be cached, but on every page request, your html template sends a request to know if the cache manifest is still up to date. IF you're not authenticated, you will be redirected to your login page, but the request to the cache manifest is also stacked. Once you've correctly logged in, 2 redirect responses are fired simultaneously : the one from your login taking you to your app's main page as expected AND the one from the cache manifest. This is how
+
+
+## Conclusion
+
+302s are ok for not API based application, otherwise they're a nightmare to deal with. 401 way to go.
