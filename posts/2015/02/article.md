@@ -1,50 +1,81 @@
 # Dealing with third-party proxy
 
-This last week, my team and I were faced with a mysterious behavior in our application
-
-## So, what's the problem ?
-
-what you have to know about our application is that:
-- it's build on a full-javascript stack (nodejs, ...)
-- we use a component called [offline](https://github.com/hubspot/offline), as our application requires to be partly operational offline
-
-| About [offline](https://github.com/hubspot/offline) :
-It is an open-source javascript package with no dependencies, which helps enhance your user's experience by detecting whether they're connected to the internet or not, and in the latter case, can perform some actions to enable a minimum usage of your app. The user, once offline, can still use your app because it has been cached.
-
-The issue we were having was that at times we would appear offline while in fact we weren't.
-
-## Diagnostic
-
-We identified pretty quickly that it was an authentication problem.
-
 If you've ever developed web applications for a large company, you must be familiar with having authentication done by a third-party proxy. And by third-party I mean handled by another team.
 
-Here what we we're working with :
+In my case, this is what our architecture looks like:
+
+
+
+## So, how's that the problem ?
+
+It's not necessarily a problem! But sometimes the proxy's behavior isn't what you would have expected. Like when your session expires, you might expect a 401 from this proxy and get a 302 instead.
+
+Even if you can communicate with the authentication team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
+
+In our case, we were having problems with API calls from our application :
+
+```
+XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-app.com%2Fapi%2Fexample. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin https://my-app.com/api/example is therefore not allowed.
+```
+is the chrome console error we kept having. After looking it up, this is what you get when trying to make a cross-domain ajax call.
+
+
+#### What does cross-domain mean ?
+
+Wikipedia says:
+> Cross-origin resource sharing (CORS) is a mechanism that allows resources (e.g. fonts, JavaScript, etc.) on a web page to be requested from another domain outside the domain from which the resource originated.
+
+By default, you are not allowed to request a resource from another domain via an ajax call. Why is that? To prevent security issues such as cross-site scripting (XSS) attacks.
+
+This is why none of our API calls actually go through.
 
 
 
 
 
 
+What's in fact happening is, since our application is cached (via a cache manifest), when trying to use it while our authentication session has expired, we only fire ajax API calls to https://my-app.com/api/example. Unfortunately those calls are blocked and you thus never get redirected in your browser to the login page.  
+
+And not only are those calls blocked, but they cannot be intercepted in your app because - as shown in above figure - the 302 redirection is handled at a browser level.
+
+So in the end trying to use your app does nothing: you are not redirected to the authentication server login.
+
+![alt text](http://media.giphy.com/media/lb95bHRxh1Ze0/giphy.gif "Fail")
 
 
-Each time we would wrongly appear offline, we'd get this error in chrome console : `XMLHttpRequest cannot load https://auth-server.com?sourceUrl=https%3A%2F%2Fmy-app.com. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin https://my-app.com is therefore not allowed.`. Additionnaly, we were seeing 302 responses.
+#### How to allow cross-domain calls
 
-What's happening is, since our application is cached (the client code is in a cache manifest in the browser), when our session expires at the proxy, the offline component is making https://my-app.com/api/connection-check calls which are redirected (302) by the proxy to the Authentication server. But since the Authentication server is behind another domain, we are getting cross-domain errors and it seemed that the offline component wasn't able to
+Calling an asset via an ajax call is possible only if the domain which hosts that asset allows it. You enable it by adding a header. So this means that in our case,  
+`Access-Control-Allow-Origin: https://my-app.com`
 
-So why does the offline component think that we're offline. It is because a 302 response is dealt with at a browser level. So the offline component doesn't actually see the 302 response. And since the cross-domain restriction prevents the redirect to go through, offline never receives any response and considers you're are thus offline!
+For the record, this header comes along with 3 others, which help you narrow down the rule to your specific need :
 
-#### About the 'Access-Control-Allow-Origin' header
-
-
+```
+Access-Control-Allow-Methods: POST, GET, HEAD, OPTIONS
+Access-Control-Allow-Headers: X-PINGOTHER
+Access-Control-Max-Age: 1728000
+```
 
 ## Solution
 
 #### Ideal
 
-We soon understood what context triggered the untimely offline status.
+Let's stay pragmatic here! Probably the easiest and most efficient solution is to ask the authentication team to change the proxy's response from 302 to 401. This way, you can easily detect when your API calls fail and 'manually' redirect to your authentication login page.
+
+However, the authentication team may not be able to comply with that need. For instance, if they have other teams excepting a 302 and cannot work on a case-by-case basis.
 
 
 #### Workaround
 
-Even if you can communicate with that team, having to require their help takes time and introduces delays, so generally you try to make do with what you have! However sometimes you may just not have a choice!
+If you have to stick with the 302, here's what you can ask. First ask if a `Access-Control-Allow-Origin` header can be added to the authentication server. This way you won't get cross-domain errors and will be able to if not perfectly at least intercept something that will let you know when to have to force a login. If that's not possible (adding headers to the proxy's response may need security clearance and take a lot of time), a hack would be to ask the authentication team to create a static blank page and add the adequate `Access-Control-Allow-Origin` header only for that single page, then redirect your unauthenticated API calls to that page.
+
+## Bonus
+
+If you're using a cache manifest, you may have experienced that you randomly get redirected to that file on first login. It's pretty annoying and tricky to understand why.
+
+Your application may be cached, but on every page request, your html template sends a request to know if the cache manifest is still up to date. IF you're not authenticated, you will be redirected to your login page, but the request to the cache manifest is also stacked. Once you've correctly logged in, 2 redirect responses are fired simultaneously : the one from your login taking you to your app's main page as expected AND the one from the cache manifest. This is how
+
+
+## Conclusion
+
+302s are ok for not API based application, otherwise they're a nightmare to deal with. 401 way to go.
