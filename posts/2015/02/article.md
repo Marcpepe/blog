@@ -6,7 +6,7 @@ In my case, this is what our architecture looks like:
 
 ![alt text](schema-1s.jpg "API based architecture with proxy")
 
-<img align="center" src="schema-1s.jpg" alt="API based architecture with proxy">
+<div style="text-align:center"><img src="schema-1s.jpg" alt="API based architecture with proxy"></div>
 
 ## So, how's that a problem ?
 
