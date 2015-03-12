@@ -6,8 +6,6 @@ In my case, this is what our architecture looks like:
 
 ![alt text](schema-1s.jpg "API based architecture with proxy")
 
-<div style="text-align:center"><img src="schema-1s.jpg" alt="API based architecture with proxy"></div>
-
 ## So, how's that a problem ?
 
 It's not necessarily a problem! But sometimes the proxy's behavior isn't what you would have expected. Like when your session expires, you might expect a 401 from this proxy and get a 302 instead.
@@ -31,10 +29,7 @@ By default, you are not allowed to request a resource from another domain via an
 
 This is why none of our API calls actually went through.
 
-
-
-
-
+![alt text](schema-2s.jpg "Cross domain calls are blocked")
 
 What's in fact happening is, since our application is cached (via a cache manifest), when trying to use it while our authentication session has expired, we only fire ajax API calls to [https://my-app.com/api/example](#). Unfortunately those calls are blocked and you thus never get redirected in your browser to the login page.  
 
@@ -77,7 +72,9 @@ angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
 
 First we create a factory to intercept responses, then we register it with the $httpProvider.
 
-That's good and all, but it would'nt work.. The 302 http code is dealt with at a browser level - as shown on figure XX, meaning that your app cannot intercept the 302 in time and instead gets the 200 from the login page.
+That's good and all, but it would'nt work.. The 302 http code is dealt with at a browser level - as shown on below figure, meaning that your app cannot intercept the 302 in time and instead gets the 200 from the login page.
+
+![alt text](schema-3s.jpg "302s cannot be intercepted")
 
 
 ## Solution
