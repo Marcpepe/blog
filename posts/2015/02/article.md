@@ -4,7 +4,7 @@ If you've ever developed web applications for a large company, you must be famil
 
 In my case, this is what our architecture looks like:
 
-
+![alt text](schema-1.jpg "Logo Title Text 1")
 
 ## So, how's that a problem ?
 
