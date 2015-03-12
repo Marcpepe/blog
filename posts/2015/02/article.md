@@ -4,7 +4,9 @@ If you've ever developed web applications for a large company, you must be famil
 
 In my case, this is what our architecture looks like:
 
-![alt text](schema-1s.jpg "Logo Title Text 1")
+![alt text](schema-1s.jpg "API based architecture with proxy")
+
+<img align="center" src="schema-1s.jpg" alt="API based architecture with proxy">
 
 ## So, how's that a problem ?
 
