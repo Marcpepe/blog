@@ -4,7 +4,7 @@ If you've ever developed web applications for a large company, you must be famil
 
 In my case, this is what our architecture looks like:
 
-![alt text](schema-1.jpg "Logo Title Text 1")
+![alt text](schema-1s.jpg "Logo Title Text 1")
 
 ## So, how's that a problem ?
 
@@ -37,8 +37,6 @@ This is why none of our API calls actually went through.
 What's in fact happening is, since our application is cached (via a cache manifest), when trying to use it while our authentication session has expired, we only fire ajax API calls to [https://my-app.com/api/example](#). Unfortunately those calls are blocked and you thus never get redirected in your browser to the login page.  
 
 So in the end trying to use your app does nothing: you are not redirected to the authentication server login.
-
-![alt text](http://media.giphy.com/media/lb95bHRxh1Ze0/giphy.gif "Fail")
 
 
 #### How to allow cross-domain calls
