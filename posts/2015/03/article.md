@@ -70,7 +70,7 @@ angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
 }])
 ```
 
-First we create a factory to intercept responses, then we register it with the $httpProvider.
+First we create a factory to intercept 302 responses, then we register it with the $httpProvider.
 
 That's good and all, but it would'nt work.. The 302 http code is dealt with at a browser level - as shown on below figure, meaning that your app cannot intercept the 302 in time and instead gets the 200 from the login page.
 
